@@ -4,7 +4,7 @@ import { PortableText } from "next-sanity";
 import Link from "next/link";
 export const revalidate = 0; // <--- ADD THIS LINE HERE
 export default async function StaffPage() {
-  const authors = await client.fetch(`*[_type == "author" && defined(position)] | order(name asc) {
+  const authors = await client.fetch(`*[_type == "author"] | order(rank asc) {
     _id,
     name,
     position,
