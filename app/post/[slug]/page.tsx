@@ -101,7 +101,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <div className="prose prose-lg md:prose-xl prose-a:text-[#800000] hover:prose-a:text-[#FFD700] prose-headings:font-bold prose-headings:text-[#800000] mx-auto text-gray-800 leading-relaxed mb-10 prose-img:rounded-xl prose-img:shadow-lg">
           {post.body ? <PortableText value={post.body} /> : <p>Start writing your story...</p>}
         </div>
-        <ArticleInteractions />
+        <ArticleInteractions postId={post._id} />
       </article>
       {recommended.length > 0 && (
         <section className="max-w-6xl mx-auto p-8 mt-12">
