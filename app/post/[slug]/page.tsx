@@ -106,7 +106,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         </div>
         <ArticleInteractions
           postId={post._id}
-          initialLikes={post.likes || 0}
+          likedBy={post.likedBy || []}
           comments={post.comments || []}
         />
       </article>
