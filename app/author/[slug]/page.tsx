@@ -2,6 +2,7 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { PortableText } from "next-sanity";
 import Link from "next/link";
+export const revalidate = 0;
 export default async function AuthorPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const author = await client.fetch(`*[_type == "author" && slug.current == $slug][0] {

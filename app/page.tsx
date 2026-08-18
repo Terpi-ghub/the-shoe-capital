@@ -1,6 +1,7 @@
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
+export const revalidate = 0;
 export default async function HomePage() {
   const posts = await client.fetch(`*[_type == "post"] | order(publishedAt desc) {
     _id,
