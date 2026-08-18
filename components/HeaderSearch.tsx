@@ -39,7 +39,7 @@ export default function HeaderSearch() {
         <div className="fixed inset-0 bg-black/80 z-[100] flex items-start justify-center pt-24 px-4 overflow-y-auto">
           <div className="bg-white rounded-xl p-6 w-full max-w-2xl shadow-2xl relative my-8">
             <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-black font-bold text-xl">✕</button>
-            <input type="text" placeholder="Search articles..." value={query} onChange={(e) => setQuery(e.target.value)} className="w-full text-2xl font-serif text-black border-b-2 border-[#800000] pb-2 outline-none mb-6 mt-4 placeholder-gray-300" autoFocus />
+            <input type="text" placeholder="Search articles..." value={query} onChange={(e) => setQuery(e.target.value)} className="w-full text-2xl text-black border-b-2 border-[#800000] pb-2 outline-none mb-6 mt-4 placeholder-gray-300" autoFocus />
             {results.length > 0 && (
               <div className="flex flex-col gap-4 max-h-[60vh] overflow-y-auto pr-2">
                 {results.map((post: any) => (
@@ -49,7 +49,7 @@ export default function HeaderSearch() {
                     )}
                     <div className="flex flex-col justify-center">
                       <span className="text-xs font-bold text-[#800000] uppercase tracking-wider mb-1 block">{post.category}</span>
-                      <h4 className="text-lg font-serif font-bold text-gray-900 mb-1">{post.title}</h4>
+                      <h4 className="text-lg font-bold text-gray-900 mb-1">{post.title}</h4>
                       {post.excerpt && (
                         <p className="text-gray-600 text-sm line-clamp-2">{post.excerpt}</p>
                       )}

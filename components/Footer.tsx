@@ -4,7 +4,7 @@ export default function Footer() {
     <footer className="bg-[#800000] text-white py-12 px-8 border-t-4 border-[#FFD700] mt-auto">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
         <div>
-          <h2 className="text-2xl font-serif font-bold tracking-tight text-[#FFD700] mb-2">
+          <h2 className="text-2xl font-bold tracking-tight text-[#FFD700] mb-2">
             The Shoe Capital
           </h2>
           <p className="text-gray-200 text-sm max-w-md">

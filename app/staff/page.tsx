@@ -16,7 +16,7 @@ export default async function StaffPage() {
   return (
     <main className="min-h-screen bg-white font-sans">
       <div className="max-w-4xl mx-auto p-8 py-16">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#800000] border-b-4 border-[#FFD700] pb-4 mb-8 text-center inline-block w-full">
+        <h1 className="text-4xl md:text-5xl font-bold text-[#800000] border-b-4 border-[#FFD700] pb-4 mb-8 text-center inline-block w-full">
           Editorial Staff
         </h1>
         <p className="text-lg text-gray-700 leading-relaxed mb-6 text-center max-w-3xl mx-auto">
@@ -36,7 +36,7 @@ export default async function StaffPage() {
                 </div>
               )}
               <div className="text-center md:text-left flex-1 py-2">
-                <h3 className="text-3xl font-serif font-bold text-gray-900 group-hover:text-[#800000] transition mb-2">
+                <h3 className="text-3xl font-bold text-gray-900 group-hover:text-[#800000] transition mb-2">
                   {author.name}
                 </h3>
                 {author.position && (

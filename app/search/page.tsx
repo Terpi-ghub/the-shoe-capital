@@ -17,7 +17,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   return (
     <main className="min-h-screen bg-white font-sans">
       <div className="max-w-6xl mx-auto p-8 py-12">
-        <h1 className="text-3xl font-serif font-bold text-[#800000] border-b-2 border-[#FFD700] pb-2 mb-8">
+        <h1 className="text-3xl font-bold text-[#800000] border-b-2 border-[#FFD700] pb-2 mb-8">
           Search Results for: <span className="text-gray-900">"{query}"</span>
         </h1>
         {posts.length === 0 ? (
@@ -40,7 +40,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                       </Link>
                     </div>
                   )}
-                  <h4 className="text-xl font-serif font-bold text-gray-900 mb-2 group-hover:text-[#800000] transition">
+                  <h4 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#800000] transition">
                     {post.title}
                   </h4>
                   {post.excerpt && (

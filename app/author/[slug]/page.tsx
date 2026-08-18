@@ -36,7 +36,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
             <img src={urlFor(author.image).width(200).height(200).url()} alt={author.name} className="w-32 h-32 md:w-48 md:h-48 rounded-full object-cover shadow-lg border-4 border-[#FFD700]" />
           )}
           <div className="text-center md:text-left flex-1 py-2">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#800000] mb-2">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#800000] mb-2">
               {author.name}
             </h1>
             {author.position && (
@@ -81,7 +81,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
                       {post.category}
                     </Link>
                   )}
-                  <h4 className="text-xl font-serif font-bold text-gray-900 mb-3 group-hover:text-[#800000] transition">
+                  <h4 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#800000] transition">
                     {post.title}
                   </h4>
                   {post.excerpt && (
