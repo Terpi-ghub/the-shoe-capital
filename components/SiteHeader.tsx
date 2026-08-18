@@ -22,7 +22,7 @@ export default function SiteHeader() {
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <Link href="/" className="flex items-center gap-3 text-2xl md:text-3xl font-bold tracking-tight text-white mb-0 hover:text-[#FFD700] transition relative z-50">
             <img src="/logo.png" alt="TSC Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-            TSC
+            The Shoe Capital
           </Link>
 
           <button onClick={() => setIsMobileMenuOpen(true)} className="md:hidden text-white hover:text-[#FFD700] transition focus:outline-none relative z-50">

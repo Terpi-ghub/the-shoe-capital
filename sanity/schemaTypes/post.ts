@@ -11,6 +11,16 @@ export default {
     { name: 'mainImage', title: 'Cover Image', type: 'image' },
     { name: 'excerpt', title: 'Excerpt / Summary', type: 'text', rows: 3, description: 'A short 1-2 sentence summary to hook the reader on the homepage.' },
     { name: 'publishedAt', title: 'Published Date', type: 'datetime' },
-    { name: 'body', title: 'Article Body', type: 'array', of: [{ type: 'block' }] }
+    { name: 'body', title: 'Article Body', type: 'array', of: [{ type: 'block' }] },
+    
+    // NEW FIELD: This array acts as the "guest list" to track exactly who liked the article
+    {
+      name: 'likedBy',
+      title: 'Liked By',
+      type: 'array',
+      description: 'A list of Clerk User IDs who liked this post.',
+      of: [{ type: 'string' }],
+      initialValue: [],
+    }
   ]
 }

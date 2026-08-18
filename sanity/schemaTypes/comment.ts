@@ -29,6 +29,7 @@ export default {
       title: 'Approved',
       type: 'boolean',
       description: 'Comments must be approved before showing on the live site.',
+      initialValue: false,
     },
   ],
 };

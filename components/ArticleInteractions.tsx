@@ -1,23 +1,50 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser, SignInButton } from "@clerk/nextjs";
 
-export default function ArticleInteractions({ postId, comments = [] }: { postId: string, comments?: any[] }) {
-  const { isSignedIn, user } = useUser();
-  const [likes, setLikes] = useState(0);
+export default function ArticleInteractions({ postId, comments = [], likedBy = [] }: { postId: string, comments?: any[], likedBy?: string[] }) {
+  const { isSignedIn, user, isLoaded } = useUser();
+  
+  // Total likes is now just the length of the list of IDs
+  const [likesCount, setLikesCount] = useState(likedBy.length);
   const [isLiked, setIsLiked] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleLike = () => {
-    setLikes(isLiked ? likes - 1 : likes + 1);
+  // When the user logs in, check if their ID is already on the database's list
+  useEffect(() => {
+    if (isLoaded && user) {
+      setIsLiked(likedBy.includes(user.id));
+    }
+  }, [isLoaded, user, likedBy]);
+
+  const handleLike = async () => {
+    if (!isSignedIn || !user) {
+      alert("Please log in to like this article!");
+      return;
+    }
+
+    const newAction = isLiked ? "unlike" : "like";
+    
+    // Instantly update the UI
+    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
     setIsLiked(!isLiked);
+
+    // Send the user's specific ID to our new API route
+    await fetch("/api/like", {
+      method: "POST",
+      body: JSON.stringify({
+        postId: postId,
+        action: newAction,
+        userId: user.id, // <--- We are now passing the Clerk ID!
+      }),
+    });
   };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isSignedIn) return;
     
-    // Send the comment securely to the API route we created
     await fetch("/api/comment", {
       method: "POST",
       body: JSON.stringify({
@@ -34,10 +61,11 @@ export default function ArticleInteractions({ postId, comments = [] }: { postId:
 
   return (
     <div className="border-t-2 border-gray-100 pt-8 mt-12">
+      {/* Like Button */}
       <div className="flex items-center gap-4 mb-12">
         <button onClick={handleLike} className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold uppercase tracking-widest text-sm transition shadow-md ${isLiked ? 'bg-[#800000] text-[#FFD700] scale-105' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
           <svg width="20" height="20" fill={isLiked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          {likes} {likes === 1 ? 'Like' : 'Likes'}
+          {likesCount} {likesCount === 1 ? 'Like' : 'Likes'}
         </button>
       </div>
 
@@ -46,11 +74,10 @@ export default function ArticleInteractions({ postId, comments = [] }: { postId:
         Discussion
       </h3>
 
-      {/* Render Approved Comments */}
       {comments.length > 0 && (
         <div className="mb-8 space-y-4">
-          {comments.map((c) => (
-            <div key={c._id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+          {comments.map((c: any) => (
+            <div key={c._id || Math.random()} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
               <p className="font-bold text-sm text-[#800000] mb-1">{c.name}</p>
               <p className="text-gray-700">{c.comment}</p>
             </div>

@@ -3,6 +3,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { PortableText } from "next-sanity";
 import Link from "next/link";
 import ArticleInteractions from "@/components/ArticleInteractions";
+export const revalidate = 0; // This tells Next.js NOT to cache this page
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = await client.fetch(`*[_type == "post" && slug.current == $slug][0] {
@@ -16,7 +17,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     category,
     publishedAt,
     body,
-    mainImage
+    mainImage,
+    likes,
+    "comments": *[_type == "comment" && post._ref == ^._id && approved == true] | order(_createdAt desc)
   }`, { slug });
   if (!post) {
     return (
@@ -57,7 +60,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               )}
               <div className="flex flex-col text-sm uppercase tracking-wide font-medium text-gray-500 gap-1">
                 <div className="flex items-center gap-2">
-                  <svg width="16" height="16" fill="none" stroke="#800000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="M15 5l4 4"/></svg>
+                  <svg width="16" height="16" fill="none" stroke="#800000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="M15 5l4 4" /></svg>
                   {post.authorSlug ? (
                     <Link href={`/author/${post.authorSlug}`} className="font-bold text-[#800000] hover:text-[#FFD700] transition">{post.authorName}</Link>
                   ) : (
@@ -66,7 +69,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 </div>
                 {post.artistName && (
                   <div className="flex items-center gap-2">
-                    <svg width="16" height="16" fill="none" stroke="#800000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>
+                    <svg width="16" height="16" fill="none" stroke="#800000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" /><line x1="16" y1="8" x2="2" y2="22" /><line x1="17.5" y1="15" x2="9" y2="15" /></svg>
                     {post.artistSlug ? (
                       <Link href={`/author/${post.artistSlug}`} className="font-bold text-[#800000] hover:text-[#FFD700] transition">{post.artistName}</Link>
                     ) : (
@@ -81,13 +84,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </div>
             <div className="flex gap-2">
               <a href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] text-white p-2 rounded-full hover:scale-110 transition shadow-md" aria-label="Share on Facebook">
-                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
               </a>
               <a href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${post.title}`} target="_blank" rel="noopener noreferrer" className="bg-black text-white p-2 rounded-full hover:scale-110 transition shadow-md" aria-label="Share on X">
-                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
               </a>
               <a href={`mailto:?subject=${post.title}&body=Read this article: ${shareUrl}`} className="bg-gray-500 text-white p-2 rounded-full hover:scale-110 transition shadow-md" aria-label="Share via Email">
-                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
               </a>
             </div>
           </div>
@@ -101,7 +104,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <div className="prose prose-lg md:prose-xl prose-a:text-[#800000] hover:prose-a:text-[#FFD700] prose-headings:font-bold prose-headings:text-[#800000] mx-auto text-gray-800 leading-relaxed mb-10 prose-img:rounded-xl prose-img:shadow-lg">
           {post.body ? <PortableText value={post.body} /> : <p>Start writing your story...</p>}
         </div>
-        <ArticleInteractions postId={post._id} />
+        <ArticleInteractions
+          postId={post._id}
+          initialLikes={post.likes || 0}
+          comments={post.comments || []}
+        />
       </article>
       {recommended.length > 0 && (
         <section className="max-w-6xl mx-auto p-8 mt-12">
@@ -124,7 +131,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   )}
                   <h4 className="text-xl font-bold text-gray-900 group-hover:text-[#800000] transition mb-4 line-clamp-2">{rec.title}</h4>
                   <div className="mt-auto flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-widest pt-4 border-t border-gray-50">
-                    <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="M15 5l4 4"/></svg>
+                    <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="M15 5l4 4" /></svg>
                     {rec.authorName || "Editorial Staff"}
                   </div>
                 </div>
