@@ -8,7 +8,22 @@ export default {
     { name: 'author', title: 'Author', type: 'reference', to: [{ type: 'author' }] },
     { name: 'artist', title: 'Artist', type: 'reference', to: [{ type: 'author' }], description: 'Optional: Select if an artist created the graphics for this post.' },
     { name: 'category', title: 'Category', type: 'string', options: { list: ['News', 'Editorial', 'Column', 'Feature', 'Sci-Tech', 'Sports', 'Literary', 'Graphics', 'Updates'] } },
-    { name: 'mainImage', title: 'Cover Image', type: 'image' },
+    { name: 'mainImage', title: 'Cover Image', type: 'image', options: { hotspot: true } },
+    
+    // NEW FIELD: Allows uploading multiple cover images for the interactive slider/carousel
+    {
+      name: 'images',
+      title: 'Additional Cover Images / Gallery',
+      type: 'array',
+      description: 'Upload additional images to turn the article cover into an interactive image carousel.',
+      of: [
+        {
+          type: 'image',
+          options: { hotspot: true },
+        }
+      ]
+    },
+
     { name: 'excerpt', title: 'Excerpt / Summary', type: 'text', rows: 3, description: 'A short 1-2 sentence summary to hook the reader on the homepage.' },
     { name: 'publishedAt', title: 'Published Date', type: 'datetime' },
     { name: 'body', title: 'Article Body', type: 'array', of: [{ type: 'block' }] },
