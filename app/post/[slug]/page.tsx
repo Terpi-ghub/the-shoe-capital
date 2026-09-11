@@ -5,7 +5,7 @@ import Link from "next/link";
 import ArticleInteractions from "@/components/ArticleInteractions";
 import ImageCarousel from "@/components/ImageCarousel";
 
-export const revalidate = 0; // This tells Next.js NOT to cache this page
+export const revalidate = 0;
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -25,7 +25,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     body,
     mainImage,
     images,
-    gallery,
     likes,
     "comments": *[_type == "comment" && post._ref == ^._id && approved == true] | order(_createdAt desc)
   }`, { slug });
@@ -48,16 +47,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     category
   }`, { postId: post._id });
 
-  const shareUrl = `https://theshoecapital.com/post/${slug}`;
+  // 1. COMBINE IMAGES: Main cover image comes first, followed by additional images!
+  const coverImages = [];
+  if (post.mainImage) {
+    coverImages.push(post.mainImage);
+  }
+  if (post.images && post.images.length > 0) {
+    coverImages.push(...post.images);
+  }
 
-  // Gather all cover images into a single array
-  const coverImages = post.images && post.images.length > 0
-    ? post.images
-    : post.gallery && post.gallery.length > 0
-    ? post.gallery
-    : post.mainImage
-    ? [post.mainImage]
-    : [];
+  // 2. ENCODE URLS: Makes social sharing actually embed the link/title properly
+  const siteUrl = `https://theshoecapital.com/post/${slug}`;
+  const encodedUrl = encodeURIComponent(siteUrl);
+  const encodedTitle = encodeURIComponent(post.title || "Read this article");
 
   return (
     <main className="min-h-screen bg-gray-50 font-sans pb-24">
@@ -83,7 +85,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </p>
           )}
 
-          {/* AUTHOR & ARTIST SEPARATE PROFILE SECTION */}
+          {/* AUTHOR & GRAPHICS SEPARATE PROFILE SECTION */}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pt-4">
             
             <div className="flex flex-wrap items-center gap-6">
@@ -120,7 +122,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 </div>
               </div>
 
-              {/* Artist Profile (Separate Badge) */}
+              {/* Graphics Profile (Now properly labeled as GRAPHICS) */}
               {post.artistName && (
                 <div className="flex items-center gap-3 border-l-2 border-gray-200 pl-6">
                   {post.artistImage ? (
@@ -142,7 +144,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                         <path d="M2 2l7.586 7.586"/>
                         <circle cx="11" cy="11" r="2"/>
                       </svg>
-                      Artist
+                      Graphics
                     </span>
                     {post.artistSlug ? (
                       <Link href={`/author/${post.artistSlug}`} className="font-bold text-[#800000] hover:text-[#FFD700] transition text-sm uppercase tracking-wide">
@@ -164,14 +166,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 {post.publishedAt && new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </div>
 
+              {/* Working social links using encodedUrl */}
               <div className="flex gap-2">
-                <a href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] text-white p-2 rounded-full hover:scale-110 transition shadow-md" aria-label="Share on Facebook">
+                <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] text-white p-2 rounded-full hover:scale-110 transition shadow-md" aria-label="Share on Facebook">
                   <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
                 </a>
-                <a href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${post.title}`} target="_blank" rel="noopener noreferrer" className="bg-black text-white p-2 rounded-full hover:scale-110 transition shadow-md" aria-label="Share on X">
+                <a href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`} target="_blank" rel="noopener noreferrer" className="bg-black text-white p-2 rounded-full hover:scale-110 transition shadow-md" aria-label="Share on X">
                   <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
                 </a>
-                <a href={`mailto:?subject=${post.title}&body=Read this article: ${shareUrl}`} className="bg-gray-500 text-white p-2 rounded-full hover:scale-110 transition shadow-md" aria-label="Share via Email">
+                <a href={`mailto:?subject=${encodedTitle}&body=Read this article: ${encodedUrl}`} className="bg-gray-500 text-white p-2 rounded-full hover:scale-110 transition shadow-md" aria-label="Share via Email">
                   <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
                 </a>
               </div>
@@ -180,10 +183,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </div>
         </header>
 
-        {/* Carousel or single cover render */}
+        {/* Carousel automatically supports mainImage + all additional images */}
         <ImageCarousel images={coverImages} alt={""} />
 
-        <div className="prose prose-lg md:prose-xl prose-a:text-[#800000] hover:prose-a:text-[#FFD700] prose-headings:font-bold prose-headings:text-[#800000] mx-auto text-gray-800 leading-relaxed mb-10 prose-img:rounded-xl prose-img:shadow-lg">
+        {/* ADDED PARAGRAPH SPACING: prose-p:mb-8 and [&>p]:mb-8 force bottom margins */}
+        <div className="prose prose-lg md:prose-xl prose-p:mb-8 [&>p]:mb-8 prose-p:leading-relaxed prose-a:text-[#800000] hover:prose-a:text-[#FFD700] prose-headings:font-bold prose-headings:text-[#800000] mx-auto text-gray-800 leading-relaxed mb-10 prose-img:rounded-xl prose-img:shadow-lg">
           {post.body ? <PortableText value={post.body} /> : <p>Start writing your story...</p>}
         </div>
 
