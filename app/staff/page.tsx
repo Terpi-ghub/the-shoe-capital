@@ -94,14 +94,28 @@ export default async function StaffPage() {
           </div>
         )}
 
-        {/* CONTRIBUTORS SECTION */}
+        {/* CONTRIBUTORS SECTION WITH CLICKABLE LINKS */}
         {contributors.length > 0 && (
           <div className="text-center pt-12 border-t-2 border-gray-100">
-            <h2 className="text-2xl font-black text-[#800000] uppercase tracking-wider mb-4">
+            <h2 className="text-2xl font-bold text-[#800000] uppercase tracking-wider mb-4">
               Contributors
             </h2>
             <p className="text-base md:text-lg font-bold text-gray-900 leading-relaxed max-w-3xl mx-auto">
-              {contributors.map((c: any) => c.name).join(", ")}
+              {contributors.map((c: any, index: number) => (
+                <span key={c._id || index}>
+                  {c.slug ? (
+                    <Link
+                      href={`/author/${c.slug}`}
+                      className="hover:text-[#800000] hover:underline transition decoration-2 underline-offset-4"
+                    >
+                      {c.name}
+                    </Link>
+                  ) : (
+                    <span>{c.name}</span>
+                  )}
+                  {index < contributors.length - 1 && ", "}
+                </span>
+              ))}
             </p>
           </div>
         )}
