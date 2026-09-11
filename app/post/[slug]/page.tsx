@@ -103,7 +103,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   </div>
                 )}
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
                     <svg width="12" height="12" fill="none" stroke="#800000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                       <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
                       <path d="M15 5l4 4" />
@@ -137,7 +137,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     </div>
                   )}
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
                       <svg width="12" height="12" fill="none" stroke="#800000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                         <path d="M12 19l7-7 3 3-7 7-3-3z"/>
                         <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
